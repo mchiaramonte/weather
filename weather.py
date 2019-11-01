@@ -1,6 +1,8 @@
 import sys
 import time
 import requests
+import os.path
+import shutil
 from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -9,11 +11,22 @@ def placeText(image, pos, y, text, font, fill):
     theSize = font.getsize(text)
     image.text(((pos * 100) + (50 - (theSize[0]/2)), y), text, font=font, fill=fill)
 
+def fetchAndCacheImage(image):
+    theName = image[image.rfind("/")+1:];
+    if not os.path.isfile(theName):
+        with open(theName, "wb") as out_file:
+            rawImg = requests.get(image,stream=True)
+            shutil.copyfileobj(rawImg.raw, out_file)
+            del rawImg
+    return theName
+ 
+
 WIND_DIRECTIONS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
       'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'
     ]
 
 result = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
+print result.json()
 
 data = result.json()
 
@@ -67,14 +80,17 @@ while var == 1 :
         noonImgUrl = i["afternoon"]["weatherIconUrl"]
         eveningImgUrl = i["evening"]["weatherIconUrl"]
         nightImgUrl = i["night"]["weatherIconUrl"]
-    rawImg = requests.get(morningImgUrl)
-    morningImg = Image.open(BytesIO(rawImg.content))
-    rawImg = requests.get(noonImgUrl)
-    noonImg = Image.open(BytesIO(rawImg.content))
-    rawImg = requests.get(eveningImgUrl)
-    eveningImg = Image.open(BytesIO(rawImg.content))
-    rawImg = requests.get(nightImgUrl)
-    nightImg = Image.open(BytesIO(rawImg.content))
+
+
+    theName = fetchAndCacheImage(morningImgUrl)
+    morningImg = Image.open(theName)
+    theName = fetchAndCacheImage(noonImgUrl)
+    noonImg = Image.open(theName)
+    theName = fetchAndCacheImage(eveningImgUrl)
+    eveningImg = Image.open(theName)
+    theName = fetchAndCacheImage(nightImgUrl)
+    nightImg = Image.open(theName)
+
     image = Image.new('P', (inkyphat.WIDTH, inkyphat.HEIGHT))
     d = ImageDraw.Draw(image)
     image.paste(morningImg, ((50-(morningImg.width/2)),220))
@@ -89,8 +105,14 @@ while var == 1 :
     placeText(d, 1, 20, data["humidity"] + "%", fnt, inkyphat.BLACK)
     placeText(d, 2, 20, data["wind"] + "KTS", fnt, inkyphat.BLACK)
     placeText(d, 3, 20, WIND_DIRECTIONS[iPosition], fnt, inkyphat.BLACK)
+    placeText(d, 0, 80, data["loTemp"] + "/" + data["hiTemp"], fnt, inkyphat.BLACK)
+    placeText(d, 2, 80, data["gust"] + "KTS", fnt, inkyphat.BLACK)
     inkyphat.set_image(image)
     inkyphat.show()
     time.sleep(300)
     result = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
     data = result.json()
+    del morningImg
+    del noonImg
+    del eveningImg
+    del nightImg
