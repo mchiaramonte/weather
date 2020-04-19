@@ -74,7 +74,9 @@ smallfnt=ImageFont.truetype('/usr/share/fonts/liberation/LiberationSans-Regular.
 widestSize = fnt.getsize("00KTS")
 textSpacing = 100 
 halfWidest = 50 
+updateCount = 0
 while var == 1 :
+    updateCount = updateCount + 1
     for i in data["forecastOverview"]:
         morningImgUrl = i["morning"]["weatherIconUrl"]
         noonImgUrl = i["afternoon"]["weatherIconUrl"]
@@ -107,6 +109,7 @@ while var == 1 :
     placeText(d, 3, 20, WIND_DIRECTIONS[iPosition], fnt, inkyphat.BLACK)
     placeText(d, 0, 80, data["loTemp"] + "/" + data["hiTemp"], fnt, inkyphat.BLACK)
     placeText(d, 2, 80, data["gust"] + "KTS", fnt, inkyphat.BLACK)
+    placeText(d, 3, 80, str(updateCount), fnt, inkyphat.BLACK)
     inkyphat.set_image(image)
     inkyphat.show()
     time.sleep(300)
