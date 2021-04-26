@@ -112,7 +112,7 @@ while var == 1 :
     placeText(d, 3, 80, str(updateCount), fnt, inkyphat.BLACK)
     inkyphat.set_image(image)
     inkyphat.show()
-    time.sleep(300)
+    time.sleep(1800)
     result = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
     data = result.json()
     del morningImg
