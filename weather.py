@@ -3,6 +3,7 @@ import time
 import requests
 import os.path
 import shutil
+from datetime import datetime
 from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -95,21 +96,23 @@ while var == 1 :
 
     image = Image.new('P', (inkyphat.WIDTH, inkyphat.HEIGHT))
     d = ImageDraw.Draw(image)
-    image.paste(morningImg, ((50-(morningImg.width/2)),220))
-    image.paste(noonImg, (150-(noonImg.width/2),220))
-    image.paste(eveningImg, (250-(eveningImg.width/2), 220))
-    image.paste(nightImg, (350-(nightImg.width/2),220))
-    placeText(d, 0, 200, "Morning", smallfnt, inkyphat.BLACK)
-    placeText(d, 1, 200, "Afternoon", smallfnt, inkyphat.BLACK)
-    placeText(d, 2, 200, "Evening", smallfnt, inkyphat.BLACK)
-    placeText(d, 3, 200, "Night", smallfnt, inkyphat.BLACK)
+    image.paste(morningImg, ((50-(morningImg.width/2)),190))
+    image.paste(noonImg, (150-(noonImg.width/2),190))
+    image.paste(eveningImg, (250-(eveningImg.width/2), 190))
+    image.paste(nightImg, (350-(nightImg.width/2),190))
+    placeText(d, 0, 170, "Morning", smallfnt, inkyphat.BLACK)
+    placeText(d, 1, 170, "Afternoon", smallfnt, inkyphat.BLACK)
+    placeText(d, 2, 170, "Evening", smallfnt, inkyphat.BLACK)
+    placeText(d, 3, 170, "Night", smallfnt, inkyphat.BLACK)
     placeText(d, 0, 20, data["temperatureFeelLike"] + "F", fnt, inkyphat.BLACK) 
     placeText(d, 1, 20, data["humidity"] + "%", fnt, inkyphat.BLACK)
     placeText(d, 2, 20, data["wind"] + "KTS", fnt, inkyphat.BLACK)
     placeText(d, 3, 20, WIND_DIRECTIONS[iPosition], fnt, inkyphat.BLACK)
     placeText(d, 0, 80, data["loTemp"] + "/" + data["hiTemp"], fnt, inkyphat.BLACK)
     placeText(d, 2, 80, data["gust"] + "KTS", fnt, inkyphat.BLACK)
-    placeText(d, 3, 80, str(updateCount), fnt, inkyphat.BLACK)
+    now = datetime.now()
+    lastUpdate = now.strftime("%H:%M")
+    placeText(d, 3, 280, lastUpdate, smallfnt, inkyphat.BLACK)
     inkyphat.set_image(image)
     inkyphat.show()
     time.sleep(1800)
