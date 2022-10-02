@@ -27,7 +27,7 @@ WIND_DIRECTIONS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
     ]
 
 result = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
-print result.json()
+print(result.json())
 
 data = result.json()
 
@@ -96,10 +96,10 @@ while var == 1 :
 
     image = Image.new('P', (inkyphat.WIDTH, inkyphat.HEIGHT))
     d = ImageDraw.Draw(image)
-    image.paste(morningImg, ((50-(morningImg.width/2)),190))
-    image.paste(noonImg, (150-(noonImg.width/2),190))
-    image.paste(eveningImg, (250-(eveningImg.width/2), 190))
-    image.paste(nightImg, (350-(nightImg.width/2),190))
+    image.paste(morningImg, (int((50-(morningImg.width/2))),190))
+    image.paste(noonImg, (int(150-(noonImg.width/2)),190))
+    image.paste(eveningImg, (int(250-(eveningImg.width/2)), 190))
+    image.paste(nightImg, (int(350-(nightImg.width/2)),190))
     placeText(d, 0, 170, "Morning", smallfnt, inkyphat.BLACK)
     placeText(d, 1, 170, "Afternoon", smallfnt, inkyphat.BLACK)
     placeText(d, 2, 170, "Evening", smallfnt, inkyphat.BLACK)
