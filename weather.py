@@ -113,7 +113,7 @@ while var == 1 :
     now = datetime.now()
     lastUpdate = now.strftime("%H:%M")
     placeText(d, 3, 280, lastUpdate, smallfnt, inkyphat.BLACK)
-    placeText(d, 200, 280, "1.0", smallfnt, inkyphat.BLACK)
+    placeText(d, 4, 280, "1.0", smallfnt, inkyphat.BLACK)
     inkyphat.set_image(image)
     inkyphat.show()
     time.sleep(1800)
