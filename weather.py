@@ -7,6 +7,7 @@ from datetime import datetime
 from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+import math
 
 def placeText(image, pos, y, text, font, fill):
     theSize = font.getsize(text)
@@ -104,6 +105,8 @@ while var == 1 :
     placeText(d, 1, 170, "Afternoon", smallfnt, inkyphat.BLACK)
     placeText(d, 2, 170, "Evening", smallfnt, inkyphat.BLACK)
     placeText(d, 3, 170, "Night", smallfnt, inkyphat.BLACK)
+    if not data["temperatureFeelLike"] :
+        data["temperatureFeelLike"] = str(math.floor((int(data["hiTemp"]) + int(data["loTemp"])) / 2))
     placeText(d, 0, 20, data["temperatureFeelLike"] + "F", fnt, inkyphat.BLACK) 
     placeText(d, 1, 20, data["humidity"] + "%", fnt, inkyphat.BLACK)
     placeText(d, 2, 20, data["wind"] + "KTS", fnt, inkyphat.BLACK)
