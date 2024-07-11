@@ -137,6 +137,8 @@ while var == 1 :
             time.sleep(5)
             continue
         forecastResult = forecastResult.json()
+
+        break
     
     del morningImg
     del noonImg
