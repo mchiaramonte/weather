@@ -27,15 +27,17 @@ WIND_DIRECTIONS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
       'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'
     ]
 
-result = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
+result = requests.get("https://lightning.ambientweather.net/devices?public.slug=19f3efb7371679fea5c94c6733e52d7b");
+forecastResult = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609").json();
+
 print(result.json())
 
-data = result.json()
+data = result.json()["data"][0]["lastData"];
 
 inkyphat = InkyWHAT('black')
 inkyphat.set_border(inkyphat.WHITE)
 var = 1
-iDeg = data["windDirection"]
+iDeg = data["lastData"]["winddir"]
 if iDeg <= 11.25 :
     iPosition = 0;
 elif iDeg <= 33.75 :
@@ -74,12 +76,14 @@ elif iDeg <= 360.00 :
 fnt=ImageFont.truetype('/usr/share/fonts/liberation/LiberationSans-Regular.ttf', 24)
 smallfnt=ImageFont.truetype('/usr/share/fonts/liberation/LiberationSans-Regular.ttf', 14)
 widestSize = fnt.getsize("00KTS")
+# convert knots
+C_KTS = 0.868976
 textSpacing = 100 
 halfWidest = 50 
 updateCount = 0
 while var == 1 :
     updateCount = updateCount + 1
-    for i in data["forecastOverview"]:
+    for i in forecastResult["forecastOverview"]:
         morningImgUrl = i["morning"]["weatherIconUrl"]
         noonImgUrl = i["afternoon"]["weatherIconUrl"]
         eveningImgUrl = i["evening"]["weatherIconUrl"]
@@ -105,14 +109,14 @@ while var == 1 :
     placeText(d, 1, 170, "Afternoon", smallfnt, inkyphat.BLACK)
     placeText(d, 2, 170, "Evening", smallfnt, inkyphat.BLACK)
     placeText(d, 3, 170, "Night", smallfnt, inkyphat.BLACK)
-    if not data["temperatureFeelLike"] :
-        data["temperatureFeelLike"] = str(math.floor((int(data["hiTemp"]) + int(data["loTemp"])) / 2))
-    placeText(d, 0, 20, data["temperatureFeelLike"] + "F", fnt, inkyphat.BLACK) 
+    if not data["tempf"] :
+        data["tempf"] = str(math.floor((int(data["hiTemp"]) + int(data["loTemp"])) / 2))
+    placeText(d, 0, 20, data["tempf"] + "F", fnt, inkyphat.BLACK) 
     placeText(d, 1, 20, data["humidity"] + "%", fnt, inkyphat.BLACK)
-    placeText(d, 2, 20, data["wind"] + "KTS", fnt, inkyphat.BLACK)
+    placeText(d, 2, 20, (data["windspeedmph"]*C_KTS) + "KTS", fnt, inkyphat.BLACK)
     placeText(d, 3, 20, WIND_DIRECTIONS[iPosition], fnt, inkyphat.BLACK)
-    placeText(d, 0, 80, data["hiTemp"] + "/" + data["loTemp"], fnt, inkyphat.BLACK)
-    placeText(d, 2, 80, data["gust"] + "KTS", fnt, inkyphat.BLACK)
+    placeText(d, 0, 80, data["hl"]["tempf"]["h"] + "/" + data["hl"]["tempf"]["l"], fnt, inkyphat.BLACK)
+    placeText(d, 2, 80, (data["windgustmph"]*C_KTS) + "KTS", fnt, inkyphat.BLACK)
     now = datetime.now()
     lastUpdate = now.strftime("%H:%M")
     placeText(d, 3, 280, lastUpdate, smallfnt, inkyphat.BLACK)
@@ -120,7 +124,8 @@ while var == 1 :
     inkyphat.set_image(image)
     inkyphat.show()
     time.sleep(1800)
-    result = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
+    result = requests.get("https://lightning.ambientweather.net/devices?public.slug=19f3efb7371679fea5c94c6733e52d7b");
+    forecastResult = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
     data = result.json()
     del morningImg
     del noonImg
