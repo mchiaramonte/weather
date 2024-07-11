@@ -124,7 +124,7 @@ while var == 1 :
     inkyphat.set_image(image)
     inkyphat.show()
     time.sleep(1800)
-    result = requests.get("https://lightning.ambientweather.net/devices?public.slug=19f3efb7371679fea5c94c6733e52d7b");
+    result = requests.get("https://lightning.ambientweather.net/devices?public.slug=19f3efb7371679fea5c94c6733e52d7b").json()["data"][0]["lastData"];
     forecastResult = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609");
     data = result.json()
     del morningImg
