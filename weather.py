@@ -37,7 +37,7 @@ data = result.json()["data"][0]["lastData"];
 inkyphat = InkyWHAT('black')
 inkyphat.set_border(inkyphat.WHITE)
 var = 1
-iDeg = data["lastData"]["winddir"]
+iDeg = data["winddir"]
 if iDeg <= 11.25 :
     iPosition = 0;
 elif iDeg <= 33.75 :
