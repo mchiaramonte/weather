@@ -130,7 +130,7 @@ while var == 1 :
             time.sleep(5)
             continue
     
-        result = result.json()["data"][0]["lastData"];
+        data = result.json()["data"][0]["lastData"];
 
         forecastResult = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609")
         if not forecastResult.headers.get("content-type") == "application/json" : 
