@@ -10,19 +10,20 @@ from io import BytesIO
 import math
 
 def processTide():
-    startDayString = datetime.now().strftime("%Y%m%d");
+    startDayString = (datetime.now() + timedelta(days=-1)).strftime("%Y%m%d");
     endDayString = (datetime.now() + timedelta(days=1)).strftime("%Y%m%d");
     tides = requests.get("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&begin_date=" + startDayString + "&end_date=" + endDayString + "&datum=MLLW&station=8514322&time_zone=lst_ldt&units=english&interval=hilo&format=json&application=NOS.COOPS.TAC.TidePred").json();
     tidestring = "H -> L"
     for i in range(0,len(tides["predictions"])):
         tide = tides["predictions"][i]
         tideTime = datetime.strptime(tide["t"], "%Y-%m-%d %H:%M");
-        if tideTime < datetime.now():
+        if tideTime > datetime.now():
+            tide = tides["predictions"][i-1]
             if tide["type"] == "H":
                 tidestring = "H -> L";
             else:
                 tidestring = "L -> H";
-            tidestring = tidestring + " (" + tides["predictions"][i+1]["t"] + ")"    
+            #tidestring = tidestring + " (" + tides["predictions"][i+1]["t"] + ")"    
             break;
     return tidestring
 
