@@ -164,8 +164,6 @@ while var == 1 :
             continue
         forecastResult = forecastResult.json()
 
-        startDayString = datetime.now().strftime("%Y%m%d");
-        endDayString = (datetime.now() + timedelta.days(1)).strftime("%Y%m%d");
         tideData = processTide();
         tidestring = tideData[0];
         tidenext = tideData[1];
