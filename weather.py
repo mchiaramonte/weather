@@ -142,7 +142,7 @@ while var == 1 :
     placeText(d, 0, 80, str(int(round(data["hl"]["tempf"]["h"]))) + "/" + str(int(round(data["hl"]["tempf"]["l"]))), fnt, inkyphat.BLACK)
     placeText(d, 2, 80, str(int(round(data["windgustmph"]*C_KTS))) + "KTS", fnt, inkyphat.BLACK)
     placeText(d, 1, 80, tidestring, fnt, inkyphat.BLACK);
-    placeText(d, 1, 100, tidenext, fnt, inkyphat.BLACK);
+    placeText(d, 1, 110, tidenext, fnt, inkyphat.BLACK);
     now = datetime.now()
     lastUpdate = now.strftime("%H:%M")
     placeText(d, 3, 280, lastUpdate, smallfnt, inkyphat.BLACK)
