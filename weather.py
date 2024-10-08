@@ -3,7 +3,7 @@ import time
 import requests
 import os.path
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from inky import InkyWHAT
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -29,6 +29,9 @@ WIND_DIRECTIONS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
 
 result = requests.get("https://lightning.ambientweather.net/devices?public.slug=19f3efb7371679fea5c94c6733e52d7b");
 forecastResult = requests.get("https://www.weatherlink.com/embeddablePage/getData/acf9850534924ff0915ce847633ab609").json();
+startDayString = datetime.now().strftime("%Y%m%d");
+endDayString = (datetime.now() + timedelta.days(1)).strftime("%Y%m%d");
+tides = requests.get("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&begin_date=" + startDayString + "&end_date=" + endDayString + "&datum=MLLW&station=8514322&time_zone=lst_ldt&units=english&interval=hilo&format=json&application=NOS.COOPS.TAC.TidePred").json();
 
 print(result.json())
 
@@ -82,6 +85,19 @@ textSpacing = 100
 halfWidest = 50 
 updateCount = 0
 while var == 1 :
+
+    tidestring = "H -> L"
+    for i in range(0,len(tides["predicitions"])):
+        tide = tides["predictions"][i]
+        tideTime = datetime.strptime(tide["t"], "%Y-%m-%d %H:%M");
+        if tideTime < datetime.now():
+            if tide["type"] == "H":
+                tidestring = "H -> L";
+            else:
+                tidestring = "L -> H";
+            break;
+            tidestring = tidestring + " (" + tides["predictions"][i+1]["t"] + ")"
+
     updateCount = updateCount + 1
     for i in forecastResult["forecastOverview"]:
         morningImgUrl = i["morning"]["weatherIconUrl"]
@@ -117,6 +133,7 @@ while var == 1 :
     placeText(d, 3, 20, WIND_DIRECTIONS[iPosition], fnt, inkyphat.BLACK)
     placeText(d, 0, 80, str(int(round(data["hl"]["tempf"]["h"]))) + "/" + str(int(round(data["hl"]["tempf"]["l"]))), fnt, inkyphat.BLACK)
     placeText(d, 2, 80, str(int(round(data["windgustmph"]*C_KTS))) + "KTS", fnt, inkyphat.BLACK)
+    placeText(d, 1, 80, tidestring, fnt, inkyphat.BLACK);
     now = datetime.now()
     lastUpdate = now.strftime("%H:%M")
     placeText(d, 3, 280, lastUpdate, smallfnt, inkyphat.BLACK)
@@ -137,6 +154,10 @@ while var == 1 :
             time.sleep(5)
             continue
         forecastResult = forecastResult.json()
+
+        startDayString = datetime.now().strftime("%Y%m%d");
+        endDayString = (datetime.now() + timedelta.days(1)).strftime("%Y%m%d");
+        tides = requests.get("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&begin_date=" + startDayString + "&end_date=" + endDayString + "&datum=MLLW&station=8514322&time_zone=lst_ldt&units=english&interval=hilo&format=json&application=NOS.COOPS.TAC.TidePred").json();
 
         break
     
