@@ -14,18 +14,19 @@ def processTide():
     endDayString = (datetime.now() + timedelta(days=1)).strftime("%Y%m%d");
     tides = requests.get("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&begin_date=" + startDayString + "&end_date=" + endDayString + "&datum=MLLW&station=8514322&time_zone=lst_ldt&units=english&interval=hilo&format=json&application=NOS.COOPS.TAC.TidePred").json();
     tidestring = "H -> L"
+    nexttide = "00:00"
     for i in range(0,len(tides["predictions"])):
         tide = tides["predictions"][i]
         tideTime = datetime.strptime(tide["t"], "%Y-%m-%d %H:%M");
         if tideTime > datetime.now():
             tide = tides["predictions"][i-1]
             if tide["type"] == "H":
-                tidestring = "H -> L";
+                tidestring = "H > L";
             else:
-                tidestring = "L -> H";
-            #tidestring = tidestring + " (" + tides["predictions"][i+1]["t"] + ")"    
+                tidestring = "L > H";
+            nexttide = "(" + tides["predictions"][i]["t"] + ")"    
             break;
-    return tidestring
+    return [tidestring, nexttide]
 
 def placeText(image, pos, y, text, font, fill):
     theSize = font.getsize(text)
@@ -101,7 +102,9 @@ halfWidest = 50
 updateCount = 0
 while var == 1 :
 
-    tidestring = processTide()
+    tideData = processTide();
+    tidestring = tideData[0];
+    tidenext = tideData[1];
 
     updateCount = updateCount + 1
     for i in forecastResult["forecastOverview"]:
@@ -139,6 +142,7 @@ while var == 1 :
     placeText(d, 0, 80, str(int(round(data["hl"]["tempf"]["h"]))) + "/" + str(int(round(data["hl"]["tempf"]["l"]))), fnt, inkyphat.BLACK)
     placeText(d, 2, 80, str(int(round(data["windgustmph"]*C_KTS))) + "KTS", fnt, inkyphat.BLACK)
     placeText(d, 1, 80, tidestring, fnt, inkyphat.BLACK);
+    placeText(d, 1, 140, tidenext, fnt, inkyphat.BLACK);
     now = datetime.now()
     lastUpdate = now.strftime("%H:%M")
     placeText(d, 3, 280, lastUpdate, smallfnt, inkyphat.BLACK)
@@ -162,7 +166,9 @@ while var == 1 :
 
         startDayString = datetime.now().strftime("%Y%m%d");
         endDayString = (datetime.now() + timedelta.days(1)).strftime("%Y%m%d");
-        tidestring = processTide()
+        tideData = processTide();
+        tidestring = tideData[0];
+        tidenext = tideData[1];
 
         break
     
