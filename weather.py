@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import math
 
-def processTide(tides):
+def processTide():
     startDayString = datetime.now().strftime("%Y%m%d");
     endDayString = (datetime.now() + timedelta.days(1)).strftime("%Y%m%d");
     tides = requests.get("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&begin_date=" + startDayString + "&end_date=" + endDayString + "&datum=MLLW&station=8514322&time_zone=lst_ldt&units=english&interval=hilo&format=json&application=NOS.COOPS.TAC.TidePred").json();
