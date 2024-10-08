@@ -24,7 +24,7 @@ def processTide():
                 tidestring = "H > L";
             else:
                 tidestring = "L > H";
-            nexttide = "(" + tides["predictions"][i]["t"] + ")"    
+            nexttide = "(" + tideTime.strftime("%-I:%M") + ")"    
             break;
     return [tidestring, nexttide]
 
