@@ -149,7 +149,7 @@ while var == 1 :
 #    placeText(d, 3.4, 280, "1.0", smallfnt, inkyphat.BLACK)
     inkyphat.set_image(image)
     inkyphat.show()
-    time.sleep(1800)
+    time.sleep(300)
     while True :
         result = requests.get("https://lightning.ambientweather.net/devices?public.slug=19f3efb7371679fea5c94c6733e52d7b")
         if not result.headers.get("content-type") == "application/json; charset=utf-8" :
